@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\AnalysisController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,7 +23,20 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 Route::get('/', function () {
     return view('auth.login');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Add these routes
+    Route::get('/games', [GameController::class, 'index'])->name('games.index');
+    Route::get('/analysis', [AnalysisController::class, 'show'])->name('analysis.show');
+
+    // Your existing routes
+    Route::get('/quiz', [QuizController::class, 'start'])->name('quiz.start');
+    Route::post('/quiz/submit', [QuizController::class, 'submit'])->name('quiz.submit');
+    Route::get('/quiz/results/{score}', [QuizController::class, 'results'])->name('quiz.results');
+    Route::get('/analysis', [AnalysisController::class, 'show'])->name('analysis.show');
 });

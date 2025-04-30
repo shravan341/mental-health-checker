@@ -15,7 +15,8 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
+    <!-- Add in head section -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 </head>
 <body>
