@@ -19,7 +19,7 @@
                         </div>
 
                         @foreach($questions as $index => $question)
-                        <div class="quiz-step" data-step="{{ $index + 1 }}" >
+                        <div class="quiz-step" data-step="{{ $index + 1 }}">
                             <div class="card mb-4 border-info">
                                 <div class="card-body">
                                     <h5 class="card-title text-secondary mb-4">
@@ -53,7 +53,7 @@
                             <button type="button" class="btn btn-info btn-next">
                                 Next <i class="fas fa-arrow-right ms-2"></i>
                             </button>
-                            <button type="submit" class="btn btn-success btn-submit" style="display: none;">
+                            <button type="submit" class="btn btn-success btn-submit" >
                                 Submit Assessment <i class="fas fa-check ms-2"></i>
                             </button>
                         </div>
@@ -67,70 +67,68 @@
 @section('scripts')
 <style>
     .quiz-step {
-    display: none; /* Hide all by default */
-    max-height: 70vh;
-    overflow-y: auto;
-    padding: 0 15px;
-    transition: all 0.3s ease;
-}
-.quiz-step:first-child {
-    display: block; /* Show first question */
-}
-.btn-group-vertical label {
-    cursor: pointer;
-}
-.btn-outline-secondary:hover {
-    background-color: #f8f9fa;
-}
-    </style>
+        display: none;
+        max-height: 70vh;
+        overflow-y: auto;
+        padding: 0 15px;
+        transition: all 0.3s ease;
+    }
+    .quiz-step:first-child {
+        display: block;
+    }
+    .btn-group-vertical label {
+        cursor: pointer;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+    }
+</style>
 
 <script>
-    
     document.addEventListener('DOMContentLoaded', function() {
-    const steps = document.querySelectorAll('.quiz-step');
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.btn-next');
-    const submitBtn = document.querySelector('.btn-submit');
-    const progressBar = document.querySelector('.progress-bar');
-    let currentStep = 0;
-
-    function updateProgress() {
-        const progress = ((currentStep + 1) / steps.length) * 100;
-        progressBar.style.width = `${progress}%`;
-    }
-
-    function updateButtons() {
-        prevBtn.disabled = currentStep === 0;
-        nextBtn.style.display = currentStep >= steps.length - 1 ? 'none' : 'block';
-        submitBtn.style.display = currentStep >= steps.length - 1 ? 'block' : 'none';
-    }
-
-    nextBtn.addEventListener('click', function() {
-        if (!steps[currentStep].querySelector('input:checked')) {
-            alert('Please select an answer!');
-            return;
+        const steps = document.querySelectorAll('.quiz-step');
+        const prevBtn = document.querySelector('.btn-prev');
+        const nextBtn = document.querySelector('.btn-next');
+        const submitBtn = document.querySelector('.btn-submit');
+        const progressBar = document.querySelector('.progress-bar');
+        let currentStep = 0;
+    
+        function updateProgress() {
+            const progress = ((currentStep + 1) / steps.length) * 100;
+            progressBar.style.width = `${progress}%`;
         }
-
-        steps[currentStep].style.display = 'none';
-        currentStep++;
-        steps[currentStep].style.display = 'block';
-        updateProgress();
+    
+        function updateButtons() {
+            prevBtn.disabled = currentStep === 0;
+            // Fixed button visibility logic
+            nextBtn.style.display = currentStep < steps.length - 1 ? 'block' : 'none';
+            submitBtn.style.display = currentStep === steps.length - 1 ? 'block' : 'none';
+        }
+    
+        nextBtn.addEventListener('click', function() {
+            if (!steps[currentStep].querySelector('input:checked')) {
+                alert('Please select an answer!');
+                return;
+            }
+    
+            steps[currentStep].style.display = 'none';
+            currentStep++;
+            steps[currentStep].style.display = 'block';
+            updateProgress();
+            updateButtons(); // Update button states after moving
+        });
+    
+        prevBtn.addEventListener('click', function() {
+            steps[currentStep].style.display = 'none';
+            currentStep--;
+            steps[currentStep].style.display = 'block';
+            updateProgress();
+            updateButtons(); // Update button states after moving
+        });
+    
+        // Initialize button states
         updateButtons();
     });
-
-    prevBtn.addEventListener('click', function() {
-        steps[currentStep].style.display = 'none';
-        currentStep--;
-        steps[currentStep].style.display = 'block';
-        updateProgress();
-        updateButtons();
-    });
-
-    updateButtons();
-});
-</script>
+    </script>
 @endsection
-
-
-
 @endsection

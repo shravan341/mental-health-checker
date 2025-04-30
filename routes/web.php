@@ -32,6 +32,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Add these routes
     Route::get('/games', [GameController::class, 'index'])->name('games.index');
+    Route::get('/games/breathing-exercise', [GameController::class, 'breathing'])->name('games.breathing');
     Route::get('/analysis', [AnalysisController::class, 'show'])->name('analysis.show');
 
     // Your existing routes

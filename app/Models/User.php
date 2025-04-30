@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\QuizResult;
+use App\Models\GameSession;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -37,6 +38,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuizResult::class);
     }
+    
+public function gameSessions()
+{
+    return $this->hasMany(GameSession::class);
+}
 
     /**
      * The attributes that should be cast.

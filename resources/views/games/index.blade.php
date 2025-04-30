@@ -18,9 +18,9 @@
                                     <i class="fas fa-wind fa-3x text-success mb-3"></i>
                                     <h5 class="fw-bold text-success">Breathing Exercise</h5>
                                     <p class="text-muted small">Guided breathing for stress relief</p>
-                                    <button class="btn btn-success start-breathing">
+                                    <a href="{{ route('games.breathing') }}" class="btn btn-success">
                                         Start Exercise <i class="fas fa-play ms-2"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -32,9 +32,9 @@
                                     <i class="fas fa-brain fa-3x text-success mb-3"></i>
                                     <h5 class="fw-bold text-success">Memory Match</h5>
                                     <p class="text-muted small">Improve focus with card matching</p>
-                                    <button class="btn btn-success start-memory">
-                                        Start Game <i class="fas fa-play ms-2"></i>
-                                    </button>
+                                    <a href="{{ route('games.breathing') }}" class="btn btn-success">
+                                        Start Exercise <i class="fas fa-play ms-2"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>

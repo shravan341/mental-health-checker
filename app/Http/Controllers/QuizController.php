@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\QuizResult;
 class QuizController extends Controller
 {
     public function start()
@@ -34,13 +34,28 @@ class QuizController extends Controller
 
     public function submit(Request $request)
     {
-        $questionCount = count($this->start()['questions']); // Get dynamic count
+        $questions = $this->start()['questions'];
+        
         $validated = $request->validate([
-            'answers' => 'required|array|size:' . $questionCount,
+            'answers' => 'required|array|size:'.count($questions),
             'answers.*' => 'required|integer|between:0,3'
         ]);
-
-        return redirect()->route('quiz.results', ['score' => $totalScore]);
+    
+        $totalScore = array_sum($validated['answers']);
+    
+        // Store results for logged-in users
+        if (Auth::check()) {
+            Auth::user()->quizResults()->create([
+                'score' => $totalScore,
+                'answers' => $validated['answers']
+            ]);
+        }
+    
+        return redirect()->route('analysis.show')->with([
+            'score' => $totalScore,
+            'answers' => $validated['answers'],
+            'questions' => $questions
+        ]);
     }
 
     public function results($score)

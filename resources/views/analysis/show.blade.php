@@ -5,63 +5,51 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-warning text-white rounded-top-4">
-                    <h3 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Progress Analysis</h3>
+                <div class="card-header bg-success text-white rounded-top-4">
+                    <h3 class="mb-0"><i class="fas fa-chart-line me-2"></i>Your Analysis</h3>
                 </div>
                 
                 <div class="card-body p-4">
-                    <div class="row g-4">
-                        <!-- Quiz Progress -->
-                        <div class="col-md-6">
-                            <div class="card h-100 border-warning">
-                                <div class="card-body">
-                                    <h5 class="fw-bold text-warning">
-                                        <i class="fas fa-clipboard-check me-2"></i>Assessment History
-                                    </h5>
-                                    <canvas id="quizProgressChart" style="height: 300px;"></canvas>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="alert alert-success">
+                        <h4 class="alert-heading">
+                            Your Total Score: {{ $score }} / {{ count($questions) * 3 }}
+                        </h4>
+                        <p class="mb-0">
+                            @if($score <= 9)
+                            Minimal concerns - Keep up the good work!
+                            @elseif($score <= 19)
+                            Mild concerns - Consider self-care practices
+                            @elseif($score <= 29)
+                            Moderate concerns - Professional consultation recommended
+                            @else
+                            Severe concerns - Please seek professional help
+                            @endif
+                        </p>
+                    </div>
 
-                        <!-- Game Performance -->
-                        <div class="col-md-6">
-                            <div class="card h-100 border-warning">
-                                <div class="card-body">
-                                    <h5 class="fw-bold text-warning">
-                                        <i class="fas fa-gamepad me-2"></i>Game Performance
-                                    </h5>
-                                    <div class="list-group">
-                                        <div class="list-group-item d-flex justify-content-between">
-                                            <span>Breathing Exercises Completed:</span>
-                                            <span class="badge bg-warning">15</span>
-                                        </div>
-                                        <div class="list-group-item d-flex justify-content-between">
-                                            <span>Memory Match High Score:</span>
-                                            <span class="badge bg-warning">85%</span>
-                                        </div>
+                    <div class="card mb-4 border-success">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Detailed Breakdown</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach($questions as $index => $question)
+                            <div class="mb-4">
+                                <h6>Question {{ $index+1 }}: {{ $question }}</h6>
+                                <div class="progress" style="height: 30px;">
+                                    @php $severity = ['bg-success', 'bg-info', 'bg-warning', 'bg-danger']; @endphp
+                                    <div class="progress-bar {{ $severity[$answers[$index]] }}" 
+                                         style="width: {{ ($answers[$index]/3)*100 }}%">
+                                        {{ ['Not at all','Several days','More than half','Nearly every day'][$answers[$index]] }}
                                     </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
                     </div>
 
-                    <!-- Mood Tracker -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="card border-warning">
-                                <div class="card-body">
-                                    <h5 class="fw-bold text-warning">
-                                        <i class="fas fa-smile me-2"></i>Mood Trends
-                                    </h5>
-                                    <canvas id="moodTrendChart" style="height: 200px;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center mt-4">
-                        <a href="{{ route('dashboard') }}" class="btn btn-warning">
-                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    <div class="text-center">
+                        <a href="{{ route('quiz.start') }}" class="btn btn-success">
+                            <i class="fas fa-redo me-2"></i>Retake Assessment
                         </a>
                     </div>
                 </div>
@@ -69,38 +57,4 @@
         </div>
     </div>
 </div>
-
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Quiz Progress Chart
-    new Chart(document.getElementById('quizProgressChart'), {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-            datasets: [{
-                label: 'Depression Scale Score',
-                data: [12, 9, 7, 5, 4],
-                borderColor: '#ffc107',
-                tension: 0.4
-            }]
-        }
-    });
-
-    // Mood Trend Chart
-    new Chart(document.getElementById('moodTrendChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Happy', 'Neutral', 'Sad'],
-            datasets: [{
-                label: 'Mood Distribution',
-                data: [65, 25, 10],
-                backgroundColor: ['#ffc107', '#adb5bd', '#ffc107']
-            }]
-        }
-    });
-});
-</script>
-@endsection
 @endsection
