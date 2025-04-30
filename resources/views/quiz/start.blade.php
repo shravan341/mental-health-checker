@@ -19,8 +19,7 @@
                         </div>
 
                         @foreach($questions as $index => $question)
-                        <div class="quiz-step" data-step="{{ $index + 1 }}" 
-                             style="display: {{ $index === 0 ? 'block' : 'none' }};">
+                        <div class="quiz-step" data-step="{{ $index + 1 }}" >
                             <div class="card mb-4 border-info">
                                 <div class="card-body">
                                     <h5 class="card-title text-secondary mb-4">
@@ -66,8 +65,28 @@
 </div>
 
 @section('scripts')
+<style>
+    .quiz-step {
+    display: none; /* Hide all by default */
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 0 15px;
+    transition: all 0.3s ease;
+}
+.quiz-step:first-child {
+    display: block; /* Show first question */
+}
+.btn-group-vertical label {
+    cursor: pointer;
+}
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+}
+    </style>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    
+    document.addEventListener('DOMContentLoaded', function() {
     const steps = document.querySelectorAll('.quiz-step');
     const prevBtn = document.querySelector('.btn-prev');
     const nextBtn = document.querySelector('.btn-next');
@@ -78,40 +97,40 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateProgress() {
         const progress = ((currentStep + 1) / steps.length) * 100;
         progressBar.style.width = `${progress}%`;
-        progressBar.setAttribute('aria-valuenow', progress);
+    }
+
+    function updateButtons() {
+        prevBtn.disabled = currentStep === 0;
+        nextBtn.style.display = currentStep >= steps.length - 1 ? 'none' : 'block';
+        submitBtn.style.display = currentStep >= steps.length - 1 ? 'block' : 'none';
     }
 
     nextBtn.addEventListener('click', function() {
-        const currentStepElement = steps[currentStep];
-        const answerSelected = currentStepElement.querySelector('input:checked');
-        
-        if (answerSelected) {
-            steps[currentStep].style.display = 'none';
-            currentStep++;
-            
-            if (currentStep >= steps.length - 1) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'block';
-            }
-            
-            steps[currentStep].style.display = 'block';
-            prevBtn.disabled = currentStep === 0;
-            updateProgress();
-        } else {
-            alert('Please select an answer before proceeding.');
+        if (!steps[currentStep].querySelector('input:checked')) {
+            alert('Please select an answer!');
+            return;
         }
+
+        steps[currentStep].style.display = 'none';
+        currentStep++;
+        steps[currentStep].style.display = 'block';
+        updateProgress();
+        updateButtons();
     });
 
     prevBtn.addEventListener('click', function() {
         steps[currentStep].style.display = 'none';
         currentStep--;
         steps[currentStep].style.display = 'block';
-        nextBtn.style.display = 'block';
-        submitBtn.style.display = 'none';
-        prevBtn.disabled = currentStep === 0;
         updateProgress();
+        updateButtons();
     });
+
+    updateButtons();
 });
 </script>
 @endsection
+
+
+
 @endsection

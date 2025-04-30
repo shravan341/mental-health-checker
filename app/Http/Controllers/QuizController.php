@@ -15,10 +15,18 @@ class QuizController extends Controller
             'Trouble falling or staying asleep, or sleeping too much',
             'Feeling tired or having little energy',
             'Poor appetite or overeating',
-            'Feeling bad about yourself - or that you are a failure or have let yourself or your family down',
-            'Trouble concentrating on things, such as reading the newspaper or watching television',
-            'Moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual',
-            'Thoughts that you would be better off dead or of hurting yourself in some way'
+            // Add as many questions as you need here
+            'Feeling nervous, anxious, or on edge',
+            'Not being able to stop worrying',
+            'Feeling afraid as if something awful might happen',
+            'Difficulty controlling your temper',
+            'Feeling irritable or easily annoyed',
+            'Avoiding social situations',
+            'Loss of interest in personal appearance',
+            'Difficulty enjoying activities you used to like',
+            'Feeling disconnected from reality',
+            'Experiencing unexplained physical pains',
+            'Feeling like you let others down frequently'
         ];
 
         return view('quiz.start', compact('questions'));
@@ -26,17 +34,10 @@ class QuizController extends Controller
 
     public function submit(Request $request)
     {
+        $questionCount = count($this->start()['questions']); // Get dynamic count
         $validated = $request->validate([
-            'answers' => 'required|array|size:9',
+            'answers' => 'required|array|size:' . $questionCount,
             'answers.*' => 'required|integer|between:0,3'
-        ]);
-
-        $totalScore = array_sum($request->answers);
-
-        // Store result in database if needed
-        Auth::user()->quizResults()->create([
-            'score' => $totalScore,
-            'answers' => json_encode($request->answers)
         ]);
 
         return redirect()->route('quiz.results', ['score' => $totalScore]);
